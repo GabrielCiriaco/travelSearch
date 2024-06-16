@@ -1,0 +1,46 @@
+[
+    {
+        "nome_hotel": "Aloft London Excel", 
+        "cidade": "LON", 
+        "endereco": "Aloft London Excel, LON",
+        "preco_total": "605.00",
+        "descricao_quarto": "Prepay Non-refundable Non-changeable, prepay in full\nAloft Room, 1 King,\n24sqm/258sqft-31sqm/334sqft, Wireless",
+        "checkin_date": "2024-07-01",
+        "checkout_date": "2024-07-05",
+        "quantidade_adultos": 2,
+        "categoria_quarto": "STANDARD_ROOM"
+    },
+    {
+        "nome_hotel": "TEST CONTENT",
+        "cidade": "LON",
+        "endereco": "TEST CONTENT, LON",
+        "preco_total": "5319.00",
+        "descricao_quarto": "Prepay Non-refundable, Non changeable, includes WiFi\nSup' Rm Top floor, 40 sqm king bed, marble\nbathroom, elegant seating area, Floor to",
+        "checkin_date": "2024-07-01",
+        "checkout_date": "2024-07-05",
+        "quantidade_adultos": 2,
+        "categoria_quarto": "SUPERIOR_ROOM"
+    },
+    {
+        "nome_hotel": "St Pancras Renaissance Hotel London",
+        "cidade": "LON",
+        "endereco": "St Pancras Renaissance Hotel London, LON",
+        "preco_total": "1772.80",
+        "descricao_quarto": "Prepay Non-refundable Non-changeable, prepay in full\nDeluxe Bedroom, Barlow Wing, 1 King or 2\nTwins, 25sqm/269sqft, Wireless internet, for",
+        "checkin_date": "2024-07-01",
+        "checkout_date": "2024-07-05",
+        "quantidade_adultos": 2,
+        "categoria_quarto": "DELUXE_ROOM"
+    },
+    {
+        "nome_hotel": "Best Western Mornington Hotel London Hyde Park",
+        "cidade": "LON",
+        "endereco": "Best Western Mornington Hotel London Hyde Park, LON",
+        "preco_total": "3596.00",
+        "descricao_quarto": "ADV PURCHASE*FULLPAY*NO CANCEL*NO CHANGES\n1 QUEEN BED,NO SMOKING,EXECUTIVE ROOM\nSTANDARD",
+        "checkin_date": "2024-07-01",
+        "checkout_date": "2024-07-05",
+        "quantidade_adultos": 2,
+        "categoria_quarto": "EXECUTIVE_ROOM"
+    }
+]
