@@ -27,8 +27,8 @@ O projeto Travel Search é um sistema que permite buscar voos e hotéis utilizan
 1. **Clone o repositório:**
 
     ```
-    git clone https://github.com/seu-usuario/travel-search.git
-    cd travel-search
+    git clone https://github.com/GabrielCiriaco/travelSearch.git
+    cd travelSearch
     ```
 
 2. **Instale as dependências:**
@@ -45,7 +45,7 @@ O projeto Travel Search é um sistema que permite buscar voos e hotéis utilizan
 
 4. **Configure o banco de dados PostgreSQL:**
 
-    Crie um banco de dados e configure as credenciais em `dataBase.py`.
+    Crie um banco de dados e configure as credenciais em `server.py`.
 
 ## Uso
 
