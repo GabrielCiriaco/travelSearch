@@ -69,25 +69,25 @@ class scrap:
         # Aguarda até que os resultados apareçam
         self.aguardar_elemento(navegador, '[class="JMc5Xc"]')
         
-        # Coleta informações sobre a melhor passagem
-        melhor_voo_info = self.encontrar_elementos(navegador, '[class="JMc5Xc"]')[0]
-        detalhes_melhor_voo = melhor_voo_info.get_attribute("aria-label")
+        # Coleta informações sobre as melhores passagens
+        melhor_voo_info = self.encontrar_elementos(navegador, '[class="JMc5Xc"]')
 
-        # Coleta informações adicionais sobre o preço da passagem
-        # informacao_adicional = self.encontrar_elementos(navegador, '[class="frOi8 AdWm1c fVSoi"]')[0].text
-
-        # Coleta informações sobre passagens mais baratas em períodos próximos
-        # passagens_baratas_info = [elemento.text.split('\n') for elemento in self.encontrar_elementos(navegador, '[class="mrywM"]')]
-        
-        # Exibe as informações coletadas
-        print(f'Melhor voo:\n')
-        print(detalhes_melhor_voo, '\n')
-        # print(informacao_adicional)
-        # print(passagens_baratas_info)
+        voos = []
+        for i in range(3):
+            voos.append(
+                {
+                'horario_partida': self.encontrar_elementos(navegador, '[class="wtdjmc YMlIz ogfYpf tPgKwe"]')[i].get_attribute("aria-label"),
+                'horario_chegada': self.encontrar_elementos(navegador, '[class="XWcVob YMlIz ogfYpf tPgKwe"]')[i].get_attribute("aria-label"),
+                'preco': self.encontrar_elementos(navegador, '[class="YMlIz FpEdX"]')[i].find_element(By.TAG_NAME, 'span').get_attribute("aria-label"),
+                'detalhes': melhor_voo_info[i].get_attribute("aria-label")[:-15]
+                }
+            )
         
         # Fecha o navegador
         navegador.quit()
+        return voos
 
 if __name__ == "__main__":
-    scrap = scrap("São Paulo", "Rio de Janeiro", "2024/06/16", "2024/07/15")
-    scrap.buscar_passagens()
+    scrap = scrap("São Paulo", "Rio de Janeiro", "2024-06-17", "2024-07-17")
+    voos = scrap.buscar_passagens()
+    print(voos)

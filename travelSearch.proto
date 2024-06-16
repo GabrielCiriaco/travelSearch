@@ -1,17 +1,12 @@
 syntax = "proto3";
 
-message request {
-  string origem = 1;
-  string destino = 2;
-  string data_ida= 3;
-  string data_volta = 4;
-}
 
 message TravelRequest {
-  string origem = 1;
-  string destino = 2;
-  string data_ida = 3;
-  string data_volta = 4;
+  tring origem = 1;
+  string cidade = 2;
+  string destino = 3;
+  string data_ida= 4;
+  string data_volta = 5;
 }
 
 message TravelResponse {
@@ -20,17 +15,20 @@ message TravelResponse {
 }
 
 message Hotel {
-  string nome = 1;
+  string nome_hotel =1;
   string cidade = 2;
   string endereco = 3;
-  int32 camas = 4;
-  float preco = 5;
+  float preco_total = 4;
+  string descricao_quarto = 5;
+  string checkin_date = 6;
+  string checkout_date = 7;
+  int32 quantidade_adultos = 8;
+  string categoria_quarto = 9;
 }
 
 message Voo {
-  string horario_ida = 1;
-  string horario_volta = 2;
-  string data_ida = 3;
-  string data_volta = 4;
-  float preco = 5;
+  string horario_partida = 1;
+  string horario_chegada = 2;
+  string preco = 3;
+  string detalhes = 4;
 }

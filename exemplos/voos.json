@@ -1,0 +1,20 @@
+[
+    {
+        "horario_partida": "Horário de partida: 11:35.",
+        "horario_chegada": "Horário de chegada: 12:35.",
+        "preco": "2411 Reais brasileiros",
+        "detalhes": "Preço total a partir de 2411 Reais brasileiros, ida e volta. Voo sem escalas da LATAM. Operado por Latam Airlines Brasil. Sai do aeroporto Aeroporto Internacional de Guarulhos às 11: 35 do dia segunda-feira, junho 17 e chega no aeroporto Aeroporto Santos Dumont às 12: 35 do dia segunda-feira, junho 17. Duração total: 1 h. "
+    },
+    {
+        "horario_partida": "Horário de partida: 18:35.",
+        "horario_chegada": "Horário de chegada: 19:35.",
+        "preco": "2411 Reais brasileiros",
+        "detalhes": "Preço total a partir de 2411 Reais brasileiros, ida e volta. Voo sem escalas da LATAM. Operado por Latam Airlines Brasil. Sai do aeroporto Aeroporto Internacional de Guarulhos às 18: 35 do dia segunda-feira, junho 17 e chega no aeroporto Aeroporto Santos Dumont às 19: 35 do dia segunda-feira, junho 17. Duração total: 1 h. "
+    },
+    {
+        "horario_partida": "Horário de partida: 07:35.",
+        "horario_chegada": "Horário de chegada: 08:30.",
+        "preco": "2411 Reais brasileiros",
+        "detalhes": "Preço total a partir de 2880 Reais brasileiros, ida e volta. Voo sem escalas da Azul. Sai do aeroporto Aeroporto Internacional de Guarulhos às 07: 35 do dia segunda-feira, junho 17 e chega no aeroporto Aeroporto Santos Dumont às 08: 30 do dia segunda-feira, junho 17. Duração total: 55 min. "
+    }
+]
