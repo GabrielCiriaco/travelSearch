@@ -57,7 +57,9 @@ class Api:
         return idsHoteis
     
     
-    def obter_ofertas_hoteis(self, token_acesso, idsHoteis, adults, checkin_date, checkout_date):
+    def obter_ofertas_hoteis(self, token_acesso, cidade, adults, checkin_date, checkout_date):
+        idsHoteis = apiInstance.obter_hoteis_por_cidade(token_acesso, cidade)
+
         headers = {
             'Authorization': f'Bearer {token_acesso}'
         }
@@ -118,12 +120,12 @@ if __name__ == '__main__':
     # print(destinos_voo)
     
     # Definir parâmetros de consulta de hotéis
-    cidade = '  LON'
+    cidade = 'LON'
     checkin_date = '2024-07-01'
     checkout_date = '2024-07-05'
     adultos = 2
 
     # Obter ofertas de hotel
-    idsHoteis = apiInstance.obter_hoteis_por_cidade(token_acesso, cidade)
-    ofertas_hotel = apiInstance.obter_ofertas_hoteis(token_acesso, idsHoteis, adultos, checkin_date, checkout_date)
-    print(ofertas_hotel)
+    
+    ofertas_hotel = apiInstance.obter_ofertas_hoteis(token_acesso, cidade, adultos, checkin_date, checkout_date)
+    print(ofertas_hotel) 
