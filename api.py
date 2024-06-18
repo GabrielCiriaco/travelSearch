@@ -50,15 +50,23 @@ class Api:
 
         resposta = requests.get(self.urlHoteisCidade, headers=headers, params=params)
         
-        idsHoteis = []
-        for hotel in resposta.json()['data']:
-            idsHoteis.append(hotel['hotelId'])
+        # idsHoteis = []
 
-        return idsHoteis
+        # for hotel in resposta.json()['data']:
+        #     idsHoteis.append(hotel['hotelId'])
+
+        # return idsHoteis
+        return resposta.json()['data']
     
     
     def obter_ofertas_hoteis(self, token_acesso, cidade, adults, checkin_date, checkout_date):
-        idsHoteis = apiInstance.obter_hoteis_por_cidade(token_acesso, cidade)
+        Hoteis = self.obter_hoteis_por_cidade(token_acesso, cidade)
+        
+        idsHoteis = []
+
+        for hotel in Hoteis:
+            idsHoteis.append(hotel['hotelId'])
+
 
         headers = {
             'Authorization': f'Bearer {token_acesso}'
@@ -75,10 +83,31 @@ class Api:
         }
 
         resposta = requests.get(self.urlHoteisOfertas, headers=headers, params=params)
+        
+        if 'data' not in resposta.json():
+            print("Não há ofertas disponíveis")
 
+            primeirosHoteis = []
+            for i in range(5):
+                primeirosHoteis.append(Hoteis[i])
+
+            apenasHoteis = []
+            for hotel in primeirosHoteis:
+                apenasHoteis.append({
+                    'nome_hotel': hotel.get('name', ''),
+                    'cidade': hotel.get('iataCode', ''),
+                    'endereco': f"{hotel.get('name', '')}, {hotel.get('iataCode', '')}",
+                    'preco_total': 0,
+                    'descricao_quarto': '',
+                    'checkin_date': checkin_date,
+                    'checkout_date': checkout_date,
+                    'quantidade_adultos': 0,
+                    'categoria_quarto': '',
+                })
+            return apenasHoteis
+        
         ofertas = []
-        print('\n\n', resposta.json(), '\n\n')
-        print(len(resposta.json()['data']))
+        print("\n aquiiiiiiiii\n",resposta.json(),"\n\n")
         for hotel in resposta.json()['data']:
             nome_hotel = hotel['hotel']['name']
             cidade = hotel['hotel']['cityCode']
@@ -90,7 +119,7 @@ class Api:
                 checkin = oferta['checkInDate']
                 checkout = oferta['checkOutDate']
                 quantidade_adultos = oferta['guests']['adults']
-                categoria_quarto = oferta['room']['typeEstimated']['category']
+                categoria_quarto = str(oferta['room']['typeEstimated'])
 
                 
                 ofertas.append({
@@ -105,7 +134,7 @@ class Api:
                     'categoria_quarto': categoria_quarto,
 
                 })
-        
+        print("\n OFERTAS:",ofertas,"\n\n")
         return ofertas
 
 # Função principal

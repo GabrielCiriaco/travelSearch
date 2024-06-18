@@ -31,6 +31,7 @@ class server:
             # Fechar o socket do cliente
             client_socket.close()
 
+    
 
     def handleClient(self, client_socket):
         # Receber os dados do cliente
@@ -53,36 +54,66 @@ class server:
             "quantidade_adultos": requestInstance.quantidade_adultos,
             "dataLimite": (datetime.today() - timedelta(days=15)).strftime('%Y-%m-%d')
         }
+        # request = {
+        #     "origem": "São Paulo",
+        #     "destino": "Rio de Janeiro",
+        #     "cidade": 'LON',
+        #     "data_ida": '2024-07-01',
+        #     "data_volta": '2024-07-05',
+        #     "quantidade_adultos": 2,
+        #     "dataLimite": "2021-1-1"
+        # }
 
-        # Inicializar o banco de dados
+            # Inicializar o banco de dados
         dbInstance = dataBase('localhost', 'teste', 'postgres', 'admin')
         connection = dbInstance.startConnection()
 
-        resultadosVoos = dbInstance.pesquisaVoo(connection, request.dataLimite, request.origem, request.destino, request.data_ida, request.data_volta)
-        resultadosHoteis = dbInstance.pesquisaHotel(connection, request.dataLimite, request.cidade, request.data_ida, request.data_volta, request.adultos)
+        resultadosVoos = dbInstance.pesquisaVoo(connection, request['dataLimite'], request['origem'], request['destino'], request['data_ida'], request['data_volta'])
+        resultadosHoteis = dbInstance.pesquisaHotel(connection, request['dataLimite'], request['cidade'], request['data_ida'], request['data_volta'], request['quantidade_adultos'])
 
-        
+        newId = dbInstance.generate_id()
+        hoje = datetime.today().strftime('%Y-%m-%d')
+        dbInstance.insertPesquisaDePacote(connection, newId, request["cidade"], request["data_ida"], request["data_volta"], request["quantidade_adultos"], request["origem"], request["destino"], hoje)
+            
         
         if(resultadosVoos != []):
+            print("Voo encontrado no banco de dados!")
             resultadosVoos = dbInstance.mapeiaVoos(resultadosVoos)
         if(resultadosHoteis != []):
+            print("Hotel encontrado no banco de dados!")
             resultadosHoteis = dbInstance.mapeiaHoteis(resultadosHoteis)
             
 
         if(resultadosVoos == []):
+            print("Buscando voos...")
             # Inicializar o crawler
-            scrapInstance = scrap(request.origem, request.destino, request.data_ida, request.data_volta)
+            scrapInstance = scrap(request['origem'], request['destino'], request['data_ida'], request['data_volta'])
             resultadosVoos = scrapInstance.buscar_passagens()
-            dbInstance.salvarVoos(connection, resultadosVoos, request.origem, request.destino, request.data_ida, request.data_volta)
 
+            # Inserir voos no banco de dados
+            for i, voo in enumerate(resultadosVoos):
+                newIdVoo = int(f"{newId}{i}")
+                dbInstance.insertVoo(connection, newIdVoo, newId, voo["horario_partida"], voo["horario_chegada"], voo["preco"], voo["detalhes"])
+                
+
+            
         if(resultadosHoteis == []):
+            print("Buscando hoteis...")
             # Inicializar a API
             apiInstance= Api()
             token_acesso = apiInstance.obterToken()
-            resultadosHoteis = apiInstance.obter_ofertas_hoteis(token_acesso, request.cidade, request.quantidade_adultos, request.data_ida, request.data_volta)
-            dbInstance.salvarHoteis(connection, resultadosHoteis, request.cidade, request.data_ida, request.data_volta, request.quantidade_adultos)
-        
+            resultadosHoteis = apiInstance.obter_ofertas_hoteis(token_acesso, request["cidade"], request["quantidade_adultos"], request["data_ida"], request["data_volta"])
+            
+            print("\n\nhoteis aqui:", resultadosHoteis)
+            for i, hotel in enumerate(resultadosHoteis):
+                newIdHotel = int(f"{newId}{i}")
+                dbInstance.insertReservaHotel(connection, newIdHotel, newId, hotel["nome_hotel"], hotel["cidade"], hotel["endereco"], hotel["preco_total"], hotel["descricao_quarto"], hotel["checkin_date"], hotel["checkout_date"], hotel["quantidade_adultos"], hotel["categoria_quarto"])
+                
         dbInstance.closeConnection(connection)
+            
+        print("\n\n\n", resultadosVoos)   
+        print("\n\n\n", resultadosHoteis)
+
         responseInstance = travelSearch_pb2.TravelResponse()
 
         for voo in resultadosVoos:
@@ -107,43 +138,21 @@ class server:
         client_socket.send(responseInstance.SerializeToString())
 
         
-        
-
     
-    
-
 if __name__ == "__main__":
+    
     # server = server("localhost", 5000)
     # server.initServer()
 
-    # Teste do crawler
-    # scrapInstance = scrap("CGH", "GIG", "2024/06/16", "2024/07/15")
-    # scrapInstance.buscar_passagens()
-
-    # Teste da API
-    # apiInstance= Api()
-    # token_acesso = apiInstance.obterToken()
-    # origem = 'PAR'
-    # preco_maximo = 200
-    # destinos_voo = apiInstance.obter_destinos_voo(token_acesso, origem, preco_maximo)
-    # print(destinos_voo)
-
-    # Teste do dataBase
-    # dbInstance = dataBase('localhost', 'teste', 'postgres', 'admin')
-    # connection = dbInstance.startConnection()
-    # pessoas = dbInstance.search(connection, 'pessoa')
-    # print(pessoas)
-    # dbInstance.closeConnection(connection)
-
     request = {
-            "origem": "São Paulo",
-            "destino": "Rio de Janeiro",
-            "cidade": 'LON',
-            "data_ida": '2024-07-01',
-            "data_volta": '2024-07-05',
-            "quantidade_adultos": 2,
-            "dataLimite": "2021-1-1"
-        }
+        "origem": "São Paulo",
+        "destino": "YYZ",
+        "cidade": 'YYZ',
+        "data_ida": '2024-07-02',
+        "data_volta": '2024-07-05',
+        "quantidade_adultos": 2,
+        "dataLimite": "2021-1-1"
+    }
 
     # Inicializar o banco de dados
     dbInstance = dataBase('localhost', 'teste', 'postgres', 'admin')
@@ -151,27 +160,49 @@ if __name__ == "__main__":
 
     resultadosVoos = dbInstance.pesquisaVoo(connection, request['dataLimite'], request['origem'], request['destino'], request['data_ida'], request['data_volta'])
     resultadosHoteis = dbInstance.pesquisaHotel(connection, request['dataLimite'], request['cidade'], request['data_ida'], request['data_volta'], request['quantidade_adultos'])
-   
-    
+
+    newId = dbInstance.generate_id()
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    dbInstance.insertPesquisaDePacote(connection, newId, request["cidade"], request["data_ida"], request["data_volta"], request["quantidade_adultos"], request["origem"], request["destino"], hoje)
+        
     
     if(resultadosVoos != []):
+        print("Voo encontrado no banco de dados!")
         resultadosVoos = dbInstance.mapeiaVoos(resultadosVoos)
     if(resultadosHoteis != []):
+        print("Hotel encontrado no banco de dados!")
         resultadosHoteis = dbInstance.mapeiaHoteis(resultadosHoteis)
         
 
     if(resultadosVoos == []):
+        print("Buscando voos...")
         # Inicializar o crawler
         scrapInstance = scrap(request['origem'], request['destino'], request['data_ida'], request['data_volta'])
         resultadosVoos = scrapInstance.buscar_passagens()
+
+        # Inserir voos no banco de dados
+        for i, voo in enumerate(resultadosVoos):
+            newIdVoo = int(f"{newId}{i}")
+            dbInstance.insertVoo(connection, newIdVoo, newId, voo["horario_partida"], voo["horario_chegada"], voo["preco"], voo["detalhes"])
+            
+
         
     if(resultadosHoteis == []):
+        print("Buscando hoteis...")
         # Inicializar a API
         apiInstance= Api()
         token_acesso = apiInstance.obterToken()
-        resultadosHoteis = apiInstance.obter_ofertas_hoteis(token_acesso, request.cidade, request.quantidade_adultos, request.data_ida, request.data_volta)
+        resultadosHoteis = apiInstance.obter_ofertas_hoteis(token_acesso, request["cidade"], request["quantidade_adultos"], request["data_ida"], request["data_volta"])
         
+        print("\n\nhoteis aqui:", resultadosHoteis)
+        for i, hotel in enumerate(resultadosHoteis):
+            newIdHotel = int(f"{newId}{i}")
+            dbInstance.insertReservaHotel(connection, newIdHotel, newId, hotel["nome_hotel"], hotel["cidade"], hotel["endereco"], hotel["preco_total"], hotel["descricao_quarto"], hotel["checkin_date"], hotel["checkout_date"], hotel["quantidade_adultos"], hotel["categoria_quarto"])
+            
     dbInstance.closeConnection(connection)
+        
+    print("\n\n\n", resultadosVoos)   
+    print("\n\n\n", resultadosHoteis)
+
+
     
-    print(resultadosVoos)   
-    print(resultadosHoteis)

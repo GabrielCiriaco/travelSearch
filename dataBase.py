@@ -1,4 +1,5 @@
 import psycopg2
+from datetime import datetime, timedelta
 
 class dataBase:
     def __init__(self, host, database, user, password):
@@ -21,15 +22,25 @@ class dataBase:
     
     def insertVoo(self, connection, id_voo, id_pesquisa, horario_partida, horario_chegada, preco, detalhes):
         cursor = connection.cursor()
-        cursor.execute(f"INSERT INTO voos (id_voo, id_pesquisa, horario_partida, horario_chegada, preco, detalhes) VALUES ({id_voo}, {id_pesquisa}, '{horario_partida}', '{horario_chegada}', '{preco}', '{detalhes}')")
+        query = """
+            INSERT INTO voos (id_voo, id_pesquisa, horario_partida, horario_chegada, preco, detalhes) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (id_voo, id_pesquisa, horario_partida, horario_chegada, preco, detalhes))
         connection.commit()
         cursor.close()
 
     def insertReservaHotel(self, connection, id_reserva, id_pesquisa, nome_hotel, cidade, endereco, preco_total, descricao_quarto, checkin_date, checkout_date, quantidade_adultos, categoria_quarto):
         cursor = connection.cursor()
-        cursor.execute(f"INSERT INTO reserva_hotel (id_reserva, id_pesquisa, nome_hotel, cidade, endereco, preco_total, descricao_quarto, checkin_date, checkout_date, quantidade_adultos, categoria_quarto) VALUES ({id_reserva}, {id_pesquisa}, '{nome_hotel}', '{cidade}', '{endereco}', {preco_total}, '{descricao_quarto}', '{checkin_date}', '{checkout_date}', {quantidade_adultos}, '{categoria_quarto}')")
+        query = """
+            INSERT INTO reserva_hotel (id_reserva, id_pesquisa, nome_hotel, cidade, endereco, preco_total, descricao_quarto, checkin_date, checkout_date, quantidade_adultos, categoria_quarto)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (id_reserva, id_pesquisa, nome_hotel, cidade, endereco, preco_total, descricao_quarto, checkin_date, checkout_date, quantidade_adultos, categoria_quarto))
         connection.commit()
         cursor.close()
+
+
     
     def insertPesquisaDePacote(self, connection, id_pesquisa, cidade, checkin_date, checkout_date, adultos, voo_origem, voo_destino, data_pesquisa):
         cursor = connection.cursor()
@@ -95,6 +106,10 @@ class dataBase:
                 "categoria_quarto": categoria_quarto
             }
         return [format_hotel_tuple(hotel) for hotel in hoteis]
+    
+    def generate_id(self):
+        now = datetime.now()
+        return int(now.strftime("%Y%m%d%H%M%S"))
 
     
     
