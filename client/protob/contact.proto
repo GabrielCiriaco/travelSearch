@@ -1,0 +1,35 @@
+syntax = "proto3";
+option go_package = "github.com/FelipeFAlves/viagem/contact";
+
+message TravelRequest {
+  string origem = 1;
+  string destino = 2;
+  string cidade = 3;
+  string data_ida = 4;
+  string data_volta = 5;
+  int32 quantidade_adultos = 6;
+}
+
+message TravelResponse {
+  repeated Hotel hoteis = 1;
+  repeated Voo voos = 2;
+}
+
+message Hotel {
+  string nome_hotel = 1;
+  string cidade = 2;
+  string endereco = 3;
+  float preco_total = 4;
+  string descricao_quarto = 5;
+  string checkin_date = 6;
+  string checkout_date = 7;
+  int32 quantidade_adultos = 8;
+  string categoria_quarto = 9;
+}
+
+message Voo {
+  string horario_partida = 1;
+  string horario_chegada = 2;
+  string preco = 3;
+  string detalhes = 4;
+}

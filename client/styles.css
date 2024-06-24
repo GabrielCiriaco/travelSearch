@@ -1,0 +1,97 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+#travelForm {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+#travelForm label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+#travelForm input[type="text"],
+#travelForm input[type="date"],
+#travelForm input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#travelForm button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+#travelForm button:hover {
+    background-color: #0056b3;
+}
+
+#response {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#response ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#response li {
+    background: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#response li strong {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#response h3 {
+    color: #007BFF;
+    margin-top: 0;
+}
