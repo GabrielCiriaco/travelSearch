@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Viagem</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <h1>Consulta de Viagem</h1>
+    <form id="travelForm">
+        <label for="origem">Origem:</label>
+        <input type="text" id="origem" name="origem" required><br><br>
+        
+        <label for="destino">Destino:</label>
+        <input type="text" id="destino" name="destino" required><br><br>
+        
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" name="cidade" required><br><br>
+        
+        <label for="dataIda">Data de Ida:</label>
+        <input type="date" id="dataIda" name="dataIda" required><br><br>
+        
+        <label for="dataVolta">Data de Volta:</label>
+        <input type="date" id="dataVolta" name="dataVolta" required><br><br>
+        
+        <label for="quantidadeAdultos">Quantidade de Adultos:</label>
+        <input type="number" id="quantidadeAdultos" name="quantidadeAdultos" required><br><br>
+        
+        <button type="submit">Enviar</button>
+    </form>
+    
+    <h2>Resposta do Servidor:</h2>
+    <div id="response"></div>
+    <button id="downloadPDF">Baixar PDF</button>
+    <button id="generateReport">Gerar Relatório</button>
+
+    <script>
+        document.getElementById('travelForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const formDataObj = Object.fromEntries(formData);
+
+            // Salvar os valores no localStorage
+            let travelData = JSON.parse(localStorage.getItem('travelData')) || [];
+            travelData.push({
+                destino: formDataObj.destino,
+                dataIda: formDataObj.dataIda,
+                dataVolta: formDataObj.dataVolta,
+                quantidadeAdultos: formDataObj.quantidadeAdultos
+            });
+            localStorage.setItem('travelData', JSON.stringify(travelData));
+
+            const response = await fetch('/consulta', {
+                method: 'POST',
+                body: JSON.stringify(formDataObj),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const result = await response.json();
+            document.getElementById('response').innerHTML = formatResponse(result);
+        });
+
+        function formatResponse(data) {
+            let html = '';
+
+            if (data.hoteis && data.hoteis.length) {
+                html += '<h3>Hotéis</h3><ul>';
+                data.hoteis.forEach(hotel => {
+                    html += `
+                        <li>
+                            <strong>${hotel.nome_hotel}</strong><br>
+                            Cidade: ${hotel.cidade}<br>
+                            Endereço: ${hotel.endereco}<br>
+                            Preço Total: R$${hotel.preco_total.toFixed(2)}<br>
+                            Descrição do Quarto: ${hotel.descricao_quarto}<br>
+                            Check-in: ${hotel.checkin_date}<br>
+                            Check-out: ${hotel.checkout_date}<br>
+                            Quantidade de Adultos: ${hotel.quantidade_adultos}<br>
+                            Categoria do Quarto: ${hotel.categoria_quarto}<br>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+            }
+
+            if (data.voos && data.voos.length) {
+                html += '<h3>Voos</h3><ul>';
+                data.voos.forEach(voo => {
+                    html += `
+                        <li>
+                            <strong>Horário de Partida:</strong> ${voo.horario_partida}<br>
+                            <strong>Horário de Chegada:</strong> ${voo.horario_chegada}<br>
+                            <strong>Preço:</strong> ${voo.preco}<br>
+                            <strong>Detalhes:</strong> ${voo.detalhes}<br>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+            }
+
+            return html;
+        }
+
+        document.getElementById('downloadPDF').addEventListener('click', () => {
+            const element = document.getElementById('response');
+            html2pdf(element, {
+                margin: 1,
+                filename: 'consulta_viagem.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            });
+        });
+
+        document.getElementById('generateReport').addEventListener('click', () => {
+            const travelData = JSON.parse(localStorage.getItem('travelData')) || [];
+
+            const destinos = {};
+            const datasIda = {};
+            const datasVolta = {};
+            let totalAdultos = 0;
+
+            travelData.forEach(entry => {
+                destinos[entry.destino] = (destinos[entry.destino] || 0) + 1;
+                datasIda[entry.dataIda] = (datasIda[entry.dataIda] || 0) + 1;
+                datasVolta[entry.dataVolta] = (datasVolta[entry.dataVolta] || 0) + 1;
+                totalAdultos += parseInt(entry.quantidadeAdultos);
+            });
+
+            const mostVisitedDestinos = Object.entries(destinos).sort((a, b) => b[1] - a[1]);
+            const mostSearchedDatasIda = Object.entries(datasIda).sort((a, b) => b[1] - a[1]);
+            const mostSearchedDatasVolta = Object.entries(datasVolta).sort((a, b) => b[1] - a[1]);
+
+            const reportContent = `
+                <h3>Relatório de Viagem</h3>
+                <p><strong>Destinos mais visitados:</strong></p>
+                <ul>${mostVisitedDestinos.map(([destino, count]) => `<li>${destino}: ${count} vezes</li>`).join('')}</ul>
+                <p><strong>Datas de ida mais pesquisadas:</strong></p>
+                <ul>${mostSearchedDatasIda.map(([dataIda, count]) => `<li>${dataIda}: ${count} vezes</li>`).join('')}</ul>
+                <p><strong>Datas de volta mais pesquisadas:</strong></p>
+                <ul>${mostSearchedDatasVolta.map(([dataVolta, count]) => `<li>${dataVolta}: ${count} vezes</li>`).join('')}</ul>
+            `;
+
+            const reportElement = document.createElement('div');
+            reportElement.innerHTML = reportContent;
+            document.body.appendChild(reportElement);
+
+            html2pdf(reportElement, {
+                margin: 1,
+                filename: 'relatorio_viagem.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            });
+
+            document.body.removeChild(reportElement);
+        });
+    </script>
+</body>
+</html>
