@@ -60,7 +60,7 @@ func consultaHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("Origem: %s, Destino: %s, Cidade: %s, DataIda: %s, DataVolta: %s, QuantidadeAdultos: %d\n",
         requestData.Origem, requestData.Destino, requestData.Cidade, requestData.DataIda, requestData.DataVolta, requestData.QuantidadeAdultos)
 
-    serverAddr := "192.168.182.26:8080"
+    serverAddr := "192.168.0.146:8080"
     conn, err := net.Dial("tcp", serverAddr)
     if err != nil {
         http.Error(w, "Failed to connect to server", http.StatusInternalServerError)
@@ -92,7 +92,7 @@ func consultaHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    modifiedData := make([]byte, 65536)
+    modifiedData := make([]byte, 71680)
 
     n, err := conn.Read(modifiedData)
     if err != nil {

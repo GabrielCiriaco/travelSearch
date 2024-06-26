@@ -105,7 +105,7 @@ class server:
             token_acesso = apiInstance.obterToken()
             resultadosHoteis = apiInstance.obter_ofertas_hoteis(token_acesso, request["cidade"], request["quantidade_adultos"], request["data_ida"], request["data_volta"])
             
-            print("\n\nhoteis aqui:", resultadosHoteis)
+            
             for i, hotel in enumerate(resultadosHoteis):
                 newIdHotel = int(f"{newId}{i}")
                 dbInstance.insertReservaHotel(connection, newIdHotel, newId, hotel["nome_hotel"], hotel["cidade"], hotel["endereco"], hotel["preco_total"], hotel["descricao_quarto"], hotel["checkin_date"], hotel["checkout_date"], hotel["quantidade_adultos"], hotel["categoria_quarto"])
