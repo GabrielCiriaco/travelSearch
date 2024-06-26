@@ -97,17 +97,17 @@ class Api:
                     'nome_hotel': hotel.get('name', ''),
                     'cidade': hotel.get('iataCode', ''),
                     'endereco': f"{hotel.get('name', '')}, {hotel.get('iataCode', '')}",
-                    'preco_total': 0,
-                    'descricao_quarto': '',
+                    'preco_total': 1,
+                    'descricao_quarto': 'Não há ofertas disponíveis',
                     'checkin_date': checkin_date,
                     'checkout_date': checkout_date,
-                    'quantidade_adultos': 0,
-                    'categoria_quarto': '',
+                    'quantidade_adultos': adults,
+                    'categoria_quarto': 'não há ofertas disponíveis',
                 })
             return apenasHoteis
         
         ofertas = []
-        print("\n aquiiiiiiiii\n",resposta.json(),"\n\n")
+        
         for hotel in resposta.json()['data']:
             nome_hotel = hotel['hotel']['name']
             cidade = hotel['hotel']['cityCode']
@@ -134,7 +134,7 @@ class Api:
                     'categoria_quarto': categoria_quarto,
 
                 })
-        print("\n OFERTAS:",ofertas,"\n\n")
+        
         return ofertas
 
 # Função principal
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     # origem = 'LON'
     # preco_maximo = 200
     # destinos_voo = apiInstance.obter_destinos_voo(token_acesso, origem, preco_maximo)
-    # print(destinos_voo)
+
     
     # Definir parâmetros de consulta de hotéis
     cidade = 'LON'
@@ -157,4 +157,4 @@ if __name__ == '__main__':
     # Obter ofertas de hotel
     
     ofertas_hotel = apiInstance.obter_ofertas_hoteis(token_acesso, cidade, adultos, checkin_date, checkout_date)
-    print(ofertas_hotel) 
+    
